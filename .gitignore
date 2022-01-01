@@ -1,5 +1,13 @@
-# Bundler cache
-.bundle
+# hidden files
+.*
+!.git*
+!.editorconfig
+!.nojekyll
+!.travis.yml
+!.markdownlint.json
+
+# bundler cache
+_site
 vendor
 
 # Jekyll cache
@@ -9,6 +17,7 @@ _site
 
 # RubyGems
 *.gem
+Gemfile.lock
 
 # NPM dependencies
 node_modules
