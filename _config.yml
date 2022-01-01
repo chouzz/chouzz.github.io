@@ -14,32 +14,32 @@ timezone: Asia/Shanghai
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Chouzz's blog                          # the main title
+title: Chouzz's blog # the main title
 
-tagline: 个人博客   # it will display as the sub-title
+tagline: 个人博客 # it will display as the sub-title
 
-description: >-                        # used by seo meta and the atom feed
+description: >- # used by seo meta and the atom feed
   一个记录读书笔记、生活分享、技术博文的地方
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
-url: 'https://chouzz.github.io'
+url: "https://chouzz.github.io"
 
 github:
-  username: chouzz             # change to your GitHub username
+  username: chouzz # change to your GitHub username
 
 twitter:
-  username: chouzz36            # change to your Twitter username
+  username: chouzz36 # change to your Twitter username
 
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
   name: chouzz
-  email: zhouhua25@qq.com             # change to your email address
+  email: zhouhua25@qq.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/chouzz36      # change to your Twitter homepage
-    - https://github.com/chouzz       # change to your GitHub homepage
+    - https://twitter.com/chouzz36 # change to your Twitter homepage
+    - https://github.com/chouzz # change to your GitHub homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
     # - https://www.linkedin.com/in/username
@@ -59,7 +59,7 @@ webmaster_verifications:
 # Web Analytics Settings
 analytics:
   google:
-    id: # fill in your Google Analytics ID
+    id: "G-JDPSEB5E1H" # fill in your Google Analytics ID
   goatcounter:
     id: # fill in your GoatCounter ID
   umami:
@@ -98,7 +98,7 @@ theme_mode: # [light | dark]
 cdn: "https://chirpy-img.netlify.app"
 
 # the avatar on sidebar, support local or CORS resources
-avatar: './assets/img/avatar/Avatar.jpg'
+avatar: "./assets/img/avatar/Avatar.jpg"
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
@@ -112,7 +112,7 @@ comments:
   provider: disqus # [disqus | utterances | giscus]
   # The provider options are as follows:
   disqus:
-    shortname: github-aqg6kwj8f1   # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
+    shortname: github-aqg6kwj8f1 # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
   # utterances settings › https://utteranc.es/
   utterances:
     repo: # <gh-username>/<repo>
