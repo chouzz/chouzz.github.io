@@ -5,7 +5,6 @@ categories: [深度学习]
 tags: [ResNet]
 ---
 
-
 # ResNet(Deep Residual Learning for Image Recognition)
 
 ## 概述
@@ -15,18 +14,18 @@ tags: [ResNet]
 ## 问题的提出
 
 <center>   
-<img src='https://img-blog.csdnimg.cn/20191220145354299.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxOTA0MzA1MTU5,size_16,color_FFFFFF,t_70' alt="深层网络误差更大的现象"  width="80%" height="80%" />    
+<img src='https://img-blog.csdnimg.cn/20191220145354299.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxOTA0MzA1MTU5,size_16,color_FFFFFF,t_70' alt="深层网络误差更大的现象"  width="80%" height="80%" />
 
 Fig.1 深层网络误差更大的现象
+
 </center>
   
 ---
 
 是否越深的网络学习的就会更好？如上图所示，作者在 CIFAR-10 数据集上进行实验，发现 56 层的网络无论是在训练误差还是在测试误差上效果都比 20 层网络的效果差，这说明并不是越深的网络效果就会越好，因为深层网络带来梯度消失或者爆炸问题，导致深层网络的误差加大，一些现在已有的常用的方法是使用正则化初始化和中间初始化来解决，而当随着网络层数的加深，精度达到饱和的时候，继续进行训练精度反而快速下降，这种现象并不是因为过拟合导致的，论文给出猜想，添加一层额外的恒等映射，如下图所示：
 
-
 <center>
-<img src=https://img-blog.csdnimg.cn/20191222194635612.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxOTA0MzA1MTU5,size_16,color_FFFFFF,t_70 alt="ResNet提出的剩余/残差学习模块"  width="60%" height="60%" />     
+<img src=https://img-blog.csdnimg.cn/20191222194635612.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxOTA0MzA1MTU5,size_16,color_FFFFFF,t_70 alt="ResNet提出的剩余/残差学习模块"  width="60%" height="60%" />
 
 Fig.2 ResNet 提出的剩余/残差学习模块
 
