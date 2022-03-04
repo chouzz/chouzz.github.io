@@ -26,3 +26,6 @@ gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 if RUBY_PLATFORM =~ /linux-musl/
   gem "jekyll-sass-converter", "~> 2.0"
 end
+# Jekyll <= 4.2.0 compatibility with Ruby 3.0
+gem "webrick", "~> 1.7"
+gem 'jekyll-compose', group: [:jekyll_plugins]
