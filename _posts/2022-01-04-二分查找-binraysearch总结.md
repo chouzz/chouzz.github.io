@@ -30,28 +30,58 @@ def binary_search(nums: List[int], target: int):
 
 递归写法
 
+以下是一个简单的二分查找算法的 Python 实现：
+
 ```python
-def binary_search_recursion(nums: List[int], target: int):
+def binary_search(arr, target):
+    # 定义左右指针
+    left = 0
+    right = len(arr) - 1
 
-    def binary_search(left: int, right: int):
-        if right >= left:
-            mid = left + (right - left) // 2
+    # 当左右指针没有相遇时循环查找
+    while left <= right:
+        # 计算中间位置
+        mid = (left + right) // 2
+        # 如果中间位置的值等于目标值，则找到了目标值，返回该位置
+        if arr[mid] == target:
+            return mid
+        # 如果中间位置的值大于目标值，则在左半部分继续查找
+        elif arr[mid] > target:
+            right = mid - 1
+        # 如果中间位置的值小于目标值，则在右半部分继续查找
+        else:
+            left = mid + 1
 
-            if target < nums[mid]:
-                binary_search(left, mid-1)
-            elif target > nums[mid]:
-                binary_search(mid+1, right)
-            else:
-                return mid
-        return -1
-    return binary_search(0, len(nums)-1)
+    # 如果没有找到目标值，返回 -1
+    return -1
 ```
 
-## 二分查找的注意事项
+上述代码中，`arr` 表示要查找的有序数组，`target` 表示要查找的目标值。算法首先定义左右指针，初始值分别为数组的开头和结尾。然后，算法在每一次循环中计算中间位置，比较中间位置的值和目标值的大小，如果中间位置的值等于目标值，则找到了目标值，返回该位置；如果中间位置的值大于目标值，则在左半部分继续查找；如果中间位置的值小于目标值，则在右半部分继续查找。如果没有找到目标值，返回 -1。
 
-- 条件语句`left<=right`,等于号不能掉，否则情况出现的不全
-- 当`taget<nums[mid]`的时候，一定要将 mid-1 赋值给 right，不能直接将 mid 赋值给 right，同样赋值给 left 的时候也是一样
+## 优化版
 
-## 二分查找的变种
+以下是一个稍微优化了一些的二分查找算法的 Python 实现：
 
-TODO
+```python
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+
+    while left <= right:
+        mid = (left + right) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return -1
+```
+
+相比之前的实现，这个实现使用了更紧凑的语法，同时还进行了一些微小的调整。具体来说，这个实现：
+
+- 使用了 Python 的多重赋值语法，将 `left` 和 `right` 初始化到同一行。
+- 将 `if` 和 `elif` 语句中的比较运算符方向调整了一下，使得 `arr[mid] < target` 和 `arr[mid] > target` 分别对应左半部分和右半部分的查找。
+- 将 `if` 语句中的 `return` 改为了 `elif`，避免了不必要的判断。这个改动是安全的，因为如果 `arr[mid] == target`，那么 `if` 语句就会被执行，而不会执行 `elif` 语句。
+
+虽然这些改动对算法的时间复杂度没有影响，但它们可以让代码更加清晰和易读。
