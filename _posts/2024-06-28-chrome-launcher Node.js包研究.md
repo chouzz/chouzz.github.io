@@ -6,7 +6,6 @@ categories: [编程语言]
 tags: [typescript]
 ---
 
-
 # chrome-launcher Node.js包研究
 
 chrome-launcher 是一个 Node.js 库，用于启动 Chrome 浏览器并简化启动时对 Chrome 浏览器的一些设置。本文旨在通过研究其源代码，学习其中的优秀编码风格和实践。
