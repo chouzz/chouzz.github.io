@@ -153,6 +153,6 @@ sudo dmesg | tail -n 50
 用 ROS 启动摄像头
 
 ##参考网站
-[CSDN blog](http://blog.csdn.net/bbqs1234/article/details/53912322)
+[CSDN blog](https://blog.csdn.net/bbqs1234/article/details/53912322)
 [intel github](https://github.com/IntelRealSense/librealsense/tree/v1.12.1)
 [intel installation guide](https://github.com/IntelRealSense/librealsense/blob/v1.12.1/doc/installation.md)
