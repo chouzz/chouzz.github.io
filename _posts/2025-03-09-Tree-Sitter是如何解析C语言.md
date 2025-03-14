@@ -1,3 +1,13 @@
+---
+layout: post
+title: Tree-Sitter 解析 C 语言的工作原理
+date: 2025-03-09 09:20 +0800
+categories: [编程语言]
+tags: [tree-sitter]
+image:
+  path: assets/img/posts/20250309/tree-sitter-logo.png
+---
+
 # Tree-Sitter 解析 C 语言的工作原理
 
 ## 1. Tree-Sitter 的核心设计
