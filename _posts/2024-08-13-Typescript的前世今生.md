@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Typescript的前世今生
+slug: typescript-history
 date: 2024-08-04 16:40 +0800
 categories: [编程语言]
 tags: [typescript]

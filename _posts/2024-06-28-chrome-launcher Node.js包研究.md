@@ -1,6 +1,7 @@
 ---
 layout: post
 title: chrome-launcher Node.js包研究
+slug: chrome-launcher-nodejs-notes
 date: 2024-06-28 14:11 +0800
 categories: [编程语言]
 tags: [typescript]

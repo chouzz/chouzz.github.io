@@ -1,5 +1,6 @@
 ---
 title: turtlebot3（一）之Ubuntu16.04上realsenceR200的使用
+slug: turtlebot3-realsense-r200-ubuntu
 date: 2020-01-30 22:48:08 +0800
 categories: [机器人]
 tags: [turtlebot]

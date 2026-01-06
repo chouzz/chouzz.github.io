@@ -1,5 +1,6 @@
 ---
 title: ResNet笔记(Deep Residual Learning for Image Recognition)
+slug: resnet-notes
 date: 2020-01-30 20:28:34 +0800
 categories: [深度学习]
 tags: [ResNet]

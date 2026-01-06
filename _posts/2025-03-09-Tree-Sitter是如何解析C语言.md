@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Tree-Sitter 解析 C 语言的工作原理
+slug: tree-sitter-c-parsing
 date: 2025-03-09 09:20 +0800
 categories: [编程语言]
 tags: [tree-sitter]

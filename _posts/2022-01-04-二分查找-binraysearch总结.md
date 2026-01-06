@@ -1,5 +1,6 @@
 ---
 title: 二分查找-BinraySearch总结
+slug: binary-search-notes
 date: 2022-01-04 22:53 +0800
 ---
 

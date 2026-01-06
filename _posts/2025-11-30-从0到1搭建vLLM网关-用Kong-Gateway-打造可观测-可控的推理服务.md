@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 从 0 到 1 搭建 vLLM 网关：用 Kong Gateway 打造可观测、可控的推理服务
+slug: vllm-gateway-kong
 date: 2025-11-30 10:00 +0800
 categories: [大模型]
 tags: [kong, vllm, gateway, monitoring]

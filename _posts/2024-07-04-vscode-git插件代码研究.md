@@ -1,6 +1,7 @@
 ---
 layout: post
 title: vscode-git插件代码研究
+slug: vscode-git-extension-notes
 date: 2024-07-04 11:40 +0800
 categories: [编程语言]
 tags: [typescript]
