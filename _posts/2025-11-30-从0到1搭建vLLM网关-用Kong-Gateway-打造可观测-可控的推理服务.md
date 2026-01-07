@@ -29,30 +29,23 @@ tags: [kong, vllm, gateway, monitoring]
 - **Network**：内网环境，无互联网连接  
 - **vLLM**：已部署并监听 `0.0.0.0:8000`
 
-### 1.1 镜像准备（离线方案）
+### 1.1 镜像准备
 
 由于服务器无法联网，需要在一台有公网访问能力的机器上提前拉取并导出镜像。
 
 在有网机器上执行：
 
 ```bash
-# 在有网机器执行
-docker pull kong/kong:latest
-docker pull postgres:13
-docker pull prom/prometheus:latest
-docker pull grafana/grafana:latest
-
-docker save -o kong.tar kong/kong:latest
-docker save -o postgres.tar postgres:13
-# ... 其他镜像按需导出
+# 在有网机器执行（拉取并打包成一个压缩包）
+docker pull kong/kong:latest postgres:13 prom/prometheus:latest grafana/grafana:latest \
+  && docker save kong/kong:latest postgres:13 prom/prometheus:latest grafana/grafana:latest | gzip > kong-stack.tar.gz
 ```
 
 将生成的 `*.tar` 镜像文件上传到内网服务器后，在服务器上加载：
 
 ```bash
-docker load -i kong.tar
-docker load -i postgres.tar
-# ... 其他镜像同理
+# 在内网服务器执行（解压并导入）
+gunzip -c kong-stack.tar.gz | docker load
 ```
 
 ---
@@ -112,9 +105,7 @@ docker run -d --name kong-gateway \
   -e KONG_ADMIN_LISTEN=127.0.0.1:8001 \
   -e KONG_STATUS_LISTEN=0.0.0.0:8100 \
   -e KONG_WORKER_PROCESSES=4 \              
-  # 关键：限制 Worker 数量（治本）
-  -e KONG_NGINX_PROXY_READ_TIMEOUT=300 \    
-  # 关键：防止长文本推理 504 超时
+  -e KONG_NGINX_PROXY_READ_TIMEOUT=300 \ 
   kong/kong:latest
 ```
 
@@ -520,5 +511,4 @@ ssh -L 9002:127.0.0.1:8002 \
    - 建议在终端中先单行调通，再整理为多行命令写入文档。
 
 通过上述实践，我们在一个纯内网环境中，以相对低的工程成本，搭建出了一套 **兼容 OpenAI 协议、支持多租户认证、具备精准限流和可观测能力** 的内部大模型网关，为后续的 LLM 应用落地打下了坚实基础。
-
 
