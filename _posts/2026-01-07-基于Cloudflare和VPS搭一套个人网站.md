@@ -9,20 +9,27 @@ tags: [cloudflare, vps, docker, rss, self-hosted]
 
 ## 前言
 
-记录一次搭建过程：利用 Cloudflare 的边缘能力和一台轻量 VPS，把常用服务集中起来，并通过子域名对外提供访问。每个子域名就是一个章节，按步骤写清楚如何部署与如何绑定。
+
+最近在cloudflare上购买了域名，有了域名之后配合VPS发现其实可以做很多有意思的事情，比如：
+- Cloudflare 免费邮件转发
+- 建立“私人短链接”系统 (Short URL)
+- 造个人“数字名片盒” (Link-in-bio)
+- 无限的“马甲邮件”转发 (Catch-all)
+- 私人定制的“状态监控页”
+
+我从这里面挑选了几个来搭建，还挺有意思的。这篇文章记录搭建过程。
 
 ## 准备清单
 
-- 一个域名并接入 Cloudflare，使用 `chouzz.com`
-- 一台 1GB 内存的 Ubuntu VPS
-- 安装好 Docker 与 Docker Compose
-- 安装好 `cloudflared`，用于 Cloudflare Tunnel
+- Cloudflare购买的域名`chouzz.com`
+- 2核心1GB 内存的 Ubuntu VPS
 
-下面开始按子域名逐个搭建。
 
 ## 安装 Docker 与 Docker Compose
 
-步骤：
+有些工具的搭建需要用到docker，虽然VPS是轻量级的VPS，但是用来搭建这些不太消耗内存的网站页足够了
+
+可以参考docker官网给出的步骤来安装：
 
 ```bash
 sudo apt update
@@ -36,13 +43,10 @@ sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 sudo systemctl enable --now docker
 ```
 
-可选：让当前用户免 sudo 使用 Docker。
-
-```bash
-sudo usermod -aG docker $USER
-```
 
 ## 安装 cloudflared
+
+cloudflared是cloudflare的一个服务，通过cloudflared可以将vps服务器中的本地服务映射到某个字域名，而且是不需要任何证书的，这点比较好
 
 步骤：
 
@@ -52,9 +56,9 @@ sudo dpkg -i cloudflared.deb
 cloudflared --version
 ```
 
-## rss.chouzz.com：FreshRSS
+## 订阅页rss.chouzz.com
 
-RSS 作为内容入口更省心，FreshRSS 很轻量，1GB 也能稳住。
+可以打造一个个人使用 RSS 作为内容入口来订阅感兴趣的话题，FreshRSS 很轻量，1GB 也能稳住。
 
 部署：
 
@@ -85,7 +89,7 @@ docker compose up -d
 5. Service 选 `HTTP`，URL 填 `localhost:8080`。
 6. 保存。
 
-## status.chouzz.com：Beszel
+## 状态页status.chouzz.com
 
 为了看到 VPS 负载与流量曲线，可以搭建 Beszel，它有图表界面显示 CPU、内存等占用情况。
 
@@ -120,9 +124,9 @@ docker compose up -d
 3. Service 选 `HTTP`，URL 填 `localhost:8090`。
 4. 保存。
 
-## hi.chouzz.com：LinkStack
+## 个人链接页hi.chouzz.com：
 
-需要一个个人链接页，把所有入口集中到一个地方。
+可以使用LinkStack来创建一个人链接页，这样可以把所有入口集中到一个地方来展示，比较炫酷，这个相对来说有点占用内存
 
 部署：
 
@@ -156,7 +160,7 @@ sudo chmod -R 775 ./data
 3. Service 选 `HTTP`，URL 填 `localhost:8091`。
 4. 保存。
 
-## memo.chouzz.com：Memos
+## 个人笔记memo.chouzz.com
 
 需要一个简单的私有笔记记录零碎想法，Memos 很轻量。
 
@@ -186,7 +190,7 @@ docker compose up -d
 3. Service 选 `HTTP`，URL 填 `localhost:8092`。
 4. 保存。
 
-## rsshub.chouzz.com：RSSHub
+## 个人订阅rsshub.chouzz.com
 
 很多站点没有 RSS，用 RSSHub 可以补上，可以通过 Vercel 部署。
 
@@ -203,10 +207,10 @@ docker compose up -d
 3. Name 填 `rsshub`，Target 填 Vercel 提供的域名。
 4. 代理状态按需选择，可开小云朵。
 
-## 收尾检查
+## 总结
 
 - 每个子域名能打开对应服务：`rss.chouzz.com`、`status.chouzz.com`、`hi.chouzz.com`、`memo.chouzz.com`、`rsshub.chouzz.com`
 - Cloudflare Tunnel 里不要留多余端口
-- VPS 上只保留 SSH 管理端口或使用 WireGuard
+- VPS 上只保留 SSH 管理端口即可
 
 到这里为止，一个“够用、轻量、能长期跑”的个人数字全家桶就搭完了。
