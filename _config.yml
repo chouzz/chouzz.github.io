@@ -14,9 +14,9 @@ timezone: Asia/Shanghai
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Chouzz's blog # the main title
+title: Chouzz # the main title
 
-tagline: 个人博客 # it will display as the sub-title
+tagline: 个人网站 # it will display as the sub-title
 
 description: >- # used by seo meta and the atom feed
   一个记录读书笔记、生活分享、技术博文的地方
