@@ -1,7 +1,15 @@
+---
+layout: post
+title: 对Claude Code移除TodoWrite 并引入TaskCreate机制的思考
+slug: claude-code-tasks-update
+date: 2026-02-04 10:00 +0800
+categories: [AI]
+tags: [claude, claude-code, llm, agent, task-management]
+---
 
-在2026年1月23日，Anthropic公司开发claude code的员工 [Thariq](https://x.com/trq212) 在 X 上发布了 [We’re turning Todos into Tasks in Claude Code](https://x.com/trq212/status/2014480496013803643) 这篇文章，详细的介绍了他们为什么移除todowrite并加入Tasks这个工具。
+在 2026 年 1 月 23 日，Anthropic 公司开发 Claude Code 的员工 [Thariq](https://x.com/trq212) 在 X 上发布了 [We're turning Todos into Tasks in Claude Code](https://x.com/trq212/status/2014480496013803643) 这篇文章，详细地介绍了他们为什么移除 TodoWrite 并引入 Tasks 这个工具。
 
-实际上，claude code中已经有Task工具了，这些也可以通过[llm-interceptor](https://github.com/chouzz/llm-interceptor)捕获到的，目前Task工具的名称和描述如下：
+实际上，Claude Code 中已经有很多工具了，其中就存在 Task 工具，但是这个 Task 和今天要说的 TaskCreate、TaskList 等工具不一样。所有的工具名称都可以通过 [llm-interceptor](https://github.com/chouzz/llm-interceptor) 捕获到的，目前 Claude Code 中 Task 工具的名称和描述如下：
 
 **Task**
 ```
@@ -30,7 +38,7 @@ Usage notes:
 ...
 ```
 
-从它的工具的描述也可以看出来，Task工具本身是用来启动claude code的subagent的，claude code利用task来完成一些阶段性的任务，从而避免主agent中占用的上下窗口过多，导致一些信息的丢失，但是这次他们移除了todowrite，增加了和tasklist，taskcreate相关的工具了，不妨让我们先看看原版的todowrite的描述吧：
+从工具描述可以看出，Task 工具本身是用来启动 Claude Code 的 subagent 的，Claude Code 利用 Task 来完成一些阶段性的任务，从而避免主 agent 中占用的上下文窗口过多，导致一些信息的丢失。但是这次他们移除了 TodoWrite，增加了和 TaskList、TaskCreate 相关的工具，不妨让我们先看看原版的 TodoWrite 的描述吧：
 ```
 Use this tool to create and manage a structured task list for your current coding session. This helps you track progress, organize complex tasks, and demonstrate thoroughness to the user.
 It also helps the user understand the progress of the task and overall progress of their requests.
@@ -59,9 +67,9 @@ NOTE that you should not use this tool if there is only one trivial task to do. 
 ## Examples of When to Use the Todo List
 ...
 ```
-这里我省略了一些示例，但是即使加了这些taskList，他扫Create，它的本质其实没有变化，我们可以看到TaskList和TaskCreate以及TaskUpdate的工具描述为：
+这里我省略了一些示例，但是即使加了这些 TaskList、TaskCreate，它的本质其实没有变化。我们可以看到 TaskList、TaskCreate 以及 TaskUpdate 的工具描述为：
 
-TaskCreate
+### TaskCreate
 ```
 Use this tool to create a structured task list for your current coding session. This helps you track progress, organize complex tasks, and demonstrate thoroughness to the user.
 It also helps the user understand the progress of the task and overall progress of their requests.
@@ -105,97 +113,20 @@ NOTE that you should not use this tool if there is only one trivial task to do. 
 - Check TaskList first to avoid creating duplicate tasks
 ```
 
-TaskGet
-```
-Use this tool to retrieve a task by its ID from the task list.
-
-## When to Use This Tool
-
-- When you need the full description and context before starting work on a task
-- To understand task dependencies (what it blocks, what blocks it)
-- After being assigned a task, to get complete requirements
-
-## Output
-
-Returns full task details:
-- **subject**: Task title
-- **description**: Detailed requirements and context
-- **status**: 'pending', 'in_progress', or 'completed'
-- **blocks**: Tasks waiting on this one to complete
-- **blockedBy**: Tasks that must complete before this one can start
-
-## Tips
-
-- After fetching a task, verify its blockedBy list is empty before beginning work.
-- Use TaskList to see all tasks in summary form.
-```
-TaskList
-```
-Use this tool to update a task in the task list.
-
-## When to Use This Tool
-
-**Mark tasks as resolved:**
-- When you have completed the work described in a task
-- When a task is no longer needed or has been superseded
-- IMPORTANT: Always mark your assigned tasks as resolved when you finish them
-- After resolving, call TaskList to find your next task
-
-- ONLY mark a task as completed when you have FULLY accomplished it
-- If you encounter errors, blockers, or cannot finish, keep the task as in_progress
-- When blocked, create a new task describing what needs to be resolved
-- Never mark a task as completed if:
-  - Tests are failing
-  - Implementation is partial
-  - You encountered unresolved errors
-  - You couldn't find necessary files or dependencies
-
-**Delete tasks:**
-- When a task is no longer relevant or was created in error
-- Setting status to `deleted` permanently removes the task
-
-**Update task details:**
-- When requirements change or become clearer
-- When establishing dependencies between tasks
-
-## Fields You Can Update
-
-- **status**: The task status (see Status Workflow below)
-- **subject**: Change the task title (imperative form, e.g., "Run tests")
-- **description**: Change the task description
-- **activeForm**: Present continuous form shown in spinner when in_progress (e.g., "Running tests")
-- **owner**: Change the task owner (agent name)
-- **metadata**: Merge metadata keys into the task (set a key to null to delete it)
-- **addBlocks**: Mark tasks that cannot start until this one completes
-- **addBlockedBy**: Mark tasks that must complete before this one can start
-
-## Status Workflow
-
-Status progresses: `pending` → `in_progress` → `completed`
-
-Use `deleted` to permanently remove a task.
-
-## Staleness
-
-Make sure to read a task's latest state using `TaskGet` before updating it.
-
-```
-从这些工具可以看出来，从本质上来说，并没有改变todowrite这个列出todolist的意图，
+可以只看 TaskCreate 工具，可以看出，从本质上来说，并没有改变 TodoWrite 这个列出 todo list 的意图。
 
 
-那么为什么他们要移除todos这个工具呢？根据这篇文章介绍，有2个原因：
+那么为什么他们要移除 TodoWrite 这个工具呢？根据这篇文章介绍，有三个原因：
 
-第一个是：随着模型能力的增强，它已经能意识到在在处理小型任务时需要做什么。原话是："We found that the TodoWrite Tool was no longer necessary because Claude already knew what it needed to do for smaller tasks."
+**第一个是：**随着模型能力的增强，它已经能意识到在处理小型任务时需要做什么。原话是："We found that the TodoWrite Tool was no longer necessary because Claude already knew what it needed to do for smaller tasks."
 
+但是这里看起来也仅限于 Anthropic 家的模型，如 Opus 4.5 之类的。如果用 Claude Code 跑其他的模型，比如 GLM4.6、GLM4.7，可能能力还是不太够，是否值得真正地移除 TodoWrite 这个工具呢？在移除这个工具后，模型是否会把拉起 subagent 的 Task 工具和目前的 TaskCreate、TaskList 等工具搞混呢？我理解是很可能的，对于人而言这个就比较混乱，对于模型而言也是一样。
 
-但是这里看起来也仅限于Anthropic家的模型，如Opus 4.5之类的，如果用claude code跑其他的模型，比如GLM4.6， GLM4.7可能能力还是不太够，是否值得真正的移除todowrite这个工具呢？在移除这个工具后，模型是否会把拉起Subagent的Task工具和目前的TaskCreate，TaskList等工具搞混呢？我理解是很有可能得，对于人而言这个就比较混乱，对于模型而言也是一样
+**第二个原因**是因为他们使用 Claude Code 来完成时间更长的任务的时候，有些任务存在前后依赖的关系。他们受到 [Beads](https://github.com/steveyegge/beads) 项目的启发，才有了这些能够建立相互依赖的 tasks。那么 Beads 这个项目本身其实是一个管理问题的追踪系统[^footnote1]，整体来说就是通过结构化之后的依赖图来替代普通的 markdown 文档，让 agent 能够查询之前完成的、现在正在进行的以及后面将要执行的任务。这也和当前的 TaskCreate、TaskList 等机制非常符合。
 
-“”
-第二个原因是因为他们使用claude code来完成时间更长的任务的时候，有些任务存在前后依赖的关系，他们受到[Beads](https://github.com/steveyegge/beads)项目的启发，才有了这个这些能够建立相互依赖的tasks。那么Beads这个项目本身其实是管理问题的一个追踪系统，整体来说就是通过结构化之后的依赖图来替代普通的markdown文档，让agent能够查询之前完成的，现在正在进行的以及后面将要执行的任务。这也和当前taskcreate, tasklist等机制非常符合。
+**还有一个很重要的原因**，是因为这种任务机制可以用于协调跨项目的工作，而且这些任务是存在文件系统里面的，就是存在~/.claude/task相当于写入一个文本文件了，不过我看了下当前的task目录，显示的是：
 
-还有一个很重要的原因，是因为这种任务机制可以用于协调跨项目的工作，而且这些任务是存在文件系统里面的，就是存在~/.claude/task相当于写入一个文本文件了，不过我看了下当前的task目录，显示的是：
-
-···bash
+```bash
 ~\.claude\tasks
 ❯ tree -a
  .
@@ -219,9 +150,9 @@ Make sure to read a task's latest state using `TaskGet` before updating it.
     ├──  3.json
     ├──  4.json
     └──  5.json
-···
+```
 
-在默认情况下，通过显式在prompt里面要求claude code通过tasklist，taskcreate等工具来完成任务时，它会创建一系列的json文件，这里记录的就是每个阶段需要完成的任务，和以前的todowrite非常类似，只不过增加了 blocks或者blockedBy这些字段
+在默认情况下，通过显式在 prompt 里面要求 Claude Code 通过 TaskList、TaskCreate 等工具来完成任务时，它会创建一系列的 JSON 文件，这里记录的就是每个阶段需要完成的任务，和以前的 TodoWrite 非常类似，只不过增加了 blocks 或 blockedBy 这些字段。
 ```bash
  ❯ bat --style=header *
 File: 1.json
@@ -280,4 +211,9 @@ File: 5.json
 }
 ```
 
-我理解这里面还有一个隐藏的变化就是现在subagent也能看到todo了，以前的claude code中todowrite工具一般是在主agent中调用的，当规划了一系列的任务后，subagent完成这其中的一个任务，改成现在的这个机制后，suabgent中也能够通过taskGet，TaskList或者TaskUpdate来阅读当前的任务以及更新任务了
+我理解这里面还有一个隐藏的变化，就是现在 subagent 也能看到 todo 了。以前的 Claude Code 中 TodoWrite 工具一般是在主 agent 中调用的，当规划了一系列的任务后，subagent 完成这其中的一个任务。改成现在的这个机制后，subagent 中也能够通过 TaskGet、TaskList 或者 TaskUpdate 来阅读当前的任务以及更新任务了。
+
+至于它的效果就因人而异了，虽然作者这么说，但是我很怀疑这样做是否会让 Claude Code 变得更好, 加了这个TaskCreate机制后是否需要将 Task 工具本身重命名以便更好反映出调用subagent的逻辑呢？否则和现有的 TaskCreate 是存在相关或者歧义的，模型有可能会理解错误。当然，对于 Anthropic 来说，他们的模型足够强大，理解能力也很强，但是对于其他模型，比如GLM4.6， GLM4.7,这些模型来说，有这样的工具不一定是好事。
+
+
+[^footnote1]: (https://deepwiki.com/steveyegge/beads)
