@@ -33,80 +33,68 @@ tags: [claude, claude-code, llm, agent]
 ### 二、多轮交互机制分析
 以下是Claude Code背后的多轮交互的对话流程图：
 
-```plantuml
-@startuml Claude Code对话流程图
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as 用户
+    participant Claude as Claude Code
+    participant Classifier as 主题分类器
+    participant Planner as 任务规划器
+    participant Explorer as 代码探索Agent
+    participant Extractor as 文件路径提取器
+    participant Director as 工具指导器
 
-skinparam backgroundColor #f8f9fa
-skinparam handwritten false
+    Note over User, Director: == 初始阶段 ==
+    User->>Claude: 介绍l2topo组件的拓扑计算算法
+    Note right of Claude: 第一个prompt用于判断是否为新主题
 
-title Claude Code L2拓扑算法分析对话流程图
-
-actor User as 用户
-participant "Claude Code" as Claude
-participant "主题分类器" as 分类器
-participant "任务规划器" as 规划器
-participant "代码探索Agent" as 探索者
-participant "文件路径提取器" as 提取器
-participant "工具指导器" as 指导器
-
-== 初始阶段 ==
-用户 -> Claude : 介绍l2topo组件的拓扑计算算法
-note right of Claude : 第一个prompt用于判断是否为新主题
-
-group 主题分类
-    Claude -> 分类器 : 发送主题判断请求
-    分类器 -> Claude : 返回JSON格式结果
-    note right of 分类器 : {"isNewTopic": true, "title": "L2拓扑算法"}
-end group
-
-== 任务规划阶段 ==
-Claude -> 规划器 : 生成任务规划
-规划器 -> Claude : 返回TodoList
-note right of 规划器 : 包含3个主要任务\n1. 探索代码结构\n2. 分析算法实现\n3. 整理算法原理
-
-== 代码探索阶段 ==
-loop 多轮代码探索
-    Claude -> 探索者 : 发送代码探索指令
-    探索者 -> Claude : 使用各种工具探索
-
-    group 文件路径提取
-        Claude -> 提取器 : 提取命令中的路径信息
-        提取器 -> Claude : 返回结构化路径数据
-        note right of 提取器 : <is_displaying_contents>\n<filepaths>
+    rect rgb(240, 248, 255)
+    Note over Claude, Classifier: 主题分类
+    Claude->>Classifier: 发送主题判断请求
+    Classifier-->>Claude: 返回JSON格式结果
+    Note right of Classifier: {"isNewTopic": true, "title": "L2拓扑算法"}
     end
 
-    group 工具使用指导
-        Claude -> 指导器 : 获取工具使用建议
-        指导器 -> Claude : 返回最佳实践
-        note right of 指导器 : 使用Glob/Grep/Read/Bash\n替代传统命令行工具
+    Note over User, Director: == 任务规划阶段 ==
+    Claude->>Planner: 生成任务规划
+    Planner-->>Claude: 返回TodoList
+    Note right of Planner: 1. 探索代码结构<br/>2. 分析算法实现<br/>3. 整理算法原理
+
+    Note over User, Director: == 代码探索阶段 ==
+    loop 多轮代码探索
+        Claude->>Explorer: 发送代码探索指令
+        Explorer-->>Claude: 使用各种工具探索
+
+        rect rgb(255, 250, 240)
+        Note over Claude, Extractor: 文件路径提取
+        Claude->>Extractor: 提取命令中的路径信息
+        Extractor-->>Claude: 返回结构化路径数据
+        Note right of Extractor: [is_displaying_contents]<br/>[filepaths]
+        end
+
+        rect rgb(245, 245, 245)
+        Note over Claude, Director: 工具使用指导
+        Claude->>Director: 获取工具使用建议
+        Director-->>Claude: 返回最佳实践
+        Note right of Director: 使用Glob/Grep/Read/Bash<br/>替代传统命令行工具
+        end
     end
-end
 
-== 算法分析阶段 ==
-Claude -> 探索者 : 深入分析拓扑计算算法
-探索者 -> Claude : 发现核心文件topocalc.c
-note right of 探索者 : l2topo_apptpc_topocalc.c\nBFS广度优先搜索算法
+    Note over User, Director: == 算法分析阶段 ==
+    Claude->>Explorer: 深入分析拓扑计算算法
+    Explorer-->>Claude: 发现核心文件topocalc.c
+    Note right of Explorer: l2topo_apptpc_topocalc.c<br/>BFS广度优先搜索算法
 
-== 数据结构分析 ==
-Claude -> 探索者 : 分析关键数据结构
-探索者 -> Claude : 读取datadef.h等头文件
-note right of 探索者 : 全局定义、接口定义、数据结构
+    Note over User, Director: == 数据结构分析 ==
+    Claude->>Explorer: 分析关键数据结构
+    Explorer-->>Claude: 读取datadef.h等头文件
+    Note right of Explorer: 全局定义、接口定义、数据结构
 
-== 结果整合阶段 ==
-Claude -> Claude : 整合所有分析结果
-Claude -> 用户 : 返回完整的分析报告
+    Note over User, Director: == 结果整合阶段 ==
+    Claude->>Claude: 整合所有分析结果
+    Claude->>User: 返回完整的分析报告
 
-legend right
-    图例说明
-    ====
-    - 绿色框：用户交互
-    - 蓝色框：Claude Code主体
-    - 黄色框：功能模块
-    - 灰色框：数据处理
-    ====
-endlegend
-
-@enduml
+    Note over User, Director: 【图例】 🟢用户 | 🔵Claude Code | 🟡功能模块 | ⚪数据处理
 ```
 
 
