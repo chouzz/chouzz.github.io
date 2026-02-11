@@ -1,12 +1,11 @@
-
 ---
 layout: post
 title: 从一个问题拆解 Claude Code 背后与 LLM 的交互及其原理
-slug: claude-code-interactive-llm
-date: 2025-10-04 10:00 +0800
-categories: [技术]
-tags: [claude, claude-code, llm, agent]
----
+slug: claude-code-interactive-llm  
+date: 2025-10-04 10:00 +0800  
+categories: [技术]  
+tags: [claude, claude-code, llm, agent]  
+---  
 
 本文通过分析 Claude Code 在回答一个"介绍 l2topo 组件拓扑计算算法"问题时的 32 轮内部对话，深入揭示了其背后的多 agent 协作机制和系统设计原理。研究发现，Claude Code 采用了"多阶段任务流水线"的架构模式，通过主题识别、任务规划、代码探索、算法分析和结果整合五个阶段，将复杂的代码分析任务分解为可执行的子环节。通过精心设计的工具体系和权限控制，让 LLM 在安全受控的环境中高效协作。主 agent 与 explorer subagent 的明确分工，既保证了任务的深度探索能力，又有效节约了上下文窗口资源。
 
