@@ -4,6 +4,7 @@ title: 从一个问题拆解 Claude Code 背后与 LLM 的交互及其原理
 slug: claude-code-interactive-llm  
 date: 2025-10-04 10:00 +0800  
 categories: [技术]  
+mermaid: true
 tags: [claude, claude-code, llm, agent]  
 ---  
 
